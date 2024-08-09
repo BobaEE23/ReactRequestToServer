@@ -1,29 +1,76 @@
 import "../App.css";
 import { useState, useEffect } from "react";
 
-const TODOS_URL = "https://jsonplaceholder.typicode.com/todos";
-export const ToDos = () => {
+export const ToDos = ({ refreshToDos, setRefreshToDos, isSort, setIsSort }) => {
   const [toDos, setToDos] = useState([]);
+  const [sortedToDos, setSortedToDos] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-    fetch(TODOS_URL)
+    fetch("http://localhost:3005/toDoS")
       .then((data) => data.json())
       .then((toDo) => {
         setToDos(toDo);
+        setSortedToDos(toDo);
       });
-  }, []);
+  }, [refreshToDos]);
+
+  const changeToDo = (idOfToDo) => {
+    const newToDo = prompt("Введите измененную задачу");
+
+    fetch(`http://localhost:3005/toDoS/${idOfToDo}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json;charset=utf-8" },
+      body: JSON.stringify({
+        title: newToDo,
+      }),
+    })
+      .then((rawResponse) => rawResponse.json())
+      .then(() => setRefreshToDos(!refreshToDos));
+  };
+
+  const deletToDo = (idOfToDo) => {
+    fetch(`http://localhost:3005/toDoS/${idOfToDo}`, {
+      method: "DELETE",
+    })
+      .then((rawResponse) => rawResponse.json())
+      .then(() => setRefreshToDos(!refreshToDos));
+  };
+
+  const sortToDoS = () => {
+    setIsSort(!isSort);
+    const sortedArray = [...toDos].sort((a, b) => {
+      return a.title.localeCompare(b.title);
+    });
+    setSortedToDos(sortedArray);
+  };
+
+  const filteredToDos = (isSort ? sortedToDos : toDos).filter((toDo) =>
+    toDo.title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <div className="toDosComponent">
       <p className="ToDosText">Список Задач</p>
-      <button className="sortBtn">Сортировать</button>
-      <input className="toDosSearch" placeHolder="Поиск задачи..."></input>
-      {toDos.map(({ userId, id, title, completed }) => {
+      <button onClick={sortToDoS} className="sortBtn">
+        Сортировать
+      </button>
+      <input
+        className="toDosSearch"
+        placeholder="Поиск задачи..."
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+      />
+      {filteredToDos.map(({ id, title }) => {
         return (
           <div className="toDo" key={id}>
-            <span className="toDoId">{id}</span>
             <span className="toDoTitle">{title}</span>
-            <button className="changeToDoBtn">Изменить</button>
+            <button onClick={() => changeToDo(id)} className="changeToDoBtn">
+              Изменить
+            </button>
+            <button onClick={() => deletToDo(id)} className="deleteToDoBtn">
+              Удалить
+            </button>
             <div className="underlineToDo"></div>
           </div>
         );
