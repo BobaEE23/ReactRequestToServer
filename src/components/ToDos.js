@@ -1,8 +1,14 @@
 import "../App.css";
 import { useState, useEffect } from "react";
 
-export const ToDos = ({ refreshToDos, setRefreshToDos, isSort, setIsSort }) => {
-  const [toDos, setToDos] = useState([]);
+export const ToDos = ({
+  refreshToDos,
+  setRefreshToDos,
+  isSort,
+  setIsSort,
+  toDos,
+  setToDos,
+}) => {
   const [sortedToDos, setSortedToDos] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -21,20 +27,22 @@ export const ToDos = ({ refreshToDos, setRefreshToDos, isSort, setIsSort }) => {
     fetch(`http://localhost:3005/toDoS/${idOfToDo}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json;charset=utf-8" },
-      body: JSON.stringify({
-        title: newToDo,
-      }),
+      body: JSON.stringify({ title: newToDo }),
     })
       .then((rawResponse) => rawResponse.json())
-      .then(() => setRefreshToDos(!refreshToDos));
+      .then((updatedToDo) => {
+        setToDos((prevTodos) =>
+          prevTodos.map((todo) => (todo.id === idOfToDo ? updatedToDo : todo))
+        );
+      });
   };
 
   const deletToDo = (idOfToDo) => {
     fetch(`http://localhost:3005/toDoS/${idOfToDo}`, {
       method: "DELETE",
-    })
-      .then((rawResponse) => rawResponse.json())
-      .then(() => setRefreshToDos(!refreshToDos));
+    }).then(() => {
+      setToDos((prevTodos) => prevTodos.filter((todo) => todo.id !== idOfToDo));
+    });
   };
 
   const sortToDoS = () => {

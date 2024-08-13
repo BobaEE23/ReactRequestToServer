@@ -3,17 +3,17 @@ import { Input } from "./components/Input";
 import { ToDos } from "./components/ToDos";
 import { useState } from "react";
 export const App = () => {
-  const [inputToDo, setInputToDo] = useState("");
   const [refreshToDos, setRefreshToDos] = useState(false);
   const [isSort, setIsSort] = useState(false);
+  const [toDos, setToDos] = useState([]);
   return (
     <div className="App">
       <Input
-        inputToDo={inputToDo}
-        setInputToDo={setInputToDo}
         refreshToDos={refreshToDos}
         isSort={isSort}
         setIsSort={setIsSort}
+        toDos={toDos}
+        setToDos={setToDos}
       ></Input>
 
       <ToDos
@@ -21,6 +21,8 @@ export const App = () => {
         setRefreshToDos={setRefreshToDos}
         isSort={isSort}
         setIsSort={setIsSort}
+        toDos={toDos}
+        setToDos={setToDos}
       ></ToDos>
     </div>
   );
