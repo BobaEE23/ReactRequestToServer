@@ -1,7 +1,10 @@
 import "../App.css";
 import { useState } from "react";
-
-export const Input = ({ setToDos }) => {
+import { InputTodoCreate } from "./InputTodoCreate";
+import { useContext } from "react";
+import { AppContext } from "../context";
+export const InputTodoListCreate = () => {
+  const { setToDos } = useContext(AppContext);
   const [inputToDo, setInputToDo] = useState("");
 
   const createToDo = (event) => {
@@ -22,22 +25,10 @@ export const Input = ({ setToDos }) => {
   };
 
   return (
-    <div className="inputComponent">
-      <form onSubmit={createToDo}>
-        <input
-          value={inputToDo}
-          onChange={({ target }) => setInputToDo(target.value)}
-          className="input"
-          placeholder="Добавление задачи..."
-        />
-        <button
-          className="buttonCreateToDo"
-          type="submit"
-          disabled={!inputToDo}
-        >
-          Добавить задачу
-        </button>
-      </form>
-    </div>
+    <InputTodoCreate
+      createToDo={createToDo}
+      inputToDo={inputToDo}
+      setInputToDo={setInputToDo}
+    />
   );
 };

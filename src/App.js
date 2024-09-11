@@ -1,29 +1,29 @@
 import "./App.css";
-import { Input } from "./components/Input";
-import { ToDos } from "./components/ToDos";
+import { InputTodoListCreate } from "./components/InputTodoListCreate";
+import { Todos } from "./components/ToDos";
 import { useState } from "react";
+
+import { AppContext } from "./context";
 export const App = () => {
   const [refreshToDos, setRefreshToDos] = useState(false);
   const [isSort, setIsSort] = useState(false);
   const [toDos, setToDos] = useState([]);
   return (
-    <div className="Ap">
-      <Input
-        refreshToDos={refreshToDos}
-        isSort={isSort}
-        setIsSort={setIsSort}
-        toDos={toDos}
-        setToDos={setToDos}
-      ></Input>
+    <AppContext.Provider
+      value={{
+        refreshToDos,
+        isSort,
+        setIsSort,
+        toDos,
+        setToDos,
+        setRefreshToDos,
+      }}
+    >
+      <div className="App">
+        <InputTodoListCreate></InputTodoListCreate>
 
-      <ToDos
-        refreshToDos={refreshToDos}
-        setRefreshToDos={setRefreshToDos}
-        isSort={isSort}
-        setIsSort={setIsSort}
-        toDos={toDos}
-        setToDos={setToDos}
-      ></ToDos>
-    </div>
+        <Todos></Todos>
+      </div>
+    </AppContext.Provider>
   );
 };

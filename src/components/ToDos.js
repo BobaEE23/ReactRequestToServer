@@ -1,17 +1,14 @@
 import "../App.css";
 import { useState, useEffect } from "react";
-
-export const ToDos = ({
-  refreshToDos,
-  setRefreshToDos,
-  isSort,
-  setIsSort,
-  toDos,
-  setToDos,
-}) => {
+import { TodosList } from "./TodosList";
+import { AppContext } from "../context";
+import { useContext } from "react";
+export const Todos = ({}) => {
   const [sortedToDos, setSortedToDos] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
 
+  const { setToDos, refreshToDos, setIsSort, isSort, toDos } =
+    useContext(AppContext);
   useEffect(() => {
     fetch("http://localhost:3005/toDoS")
       .then((data) => data.json())
@@ -58,31 +55,10 @@ export const ToDos = ({
   );
 
   return (
-    <div className="toDosComponent">
-      <p className="ToDosText">Список Задач</p>
-      <button onClick={sortToDoS} className="sortBtn">
-        Сортировать
-      </button>
-      <input
-        className="toDosSearch"
-        placeholder="Поиск задачи..."
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-      />
-      {filteredToDos.map(({ id, title }) => {
-        return (
-          <div className="toDo" key={id}>
-            <span className="toDoTitle">{title}</span>
-            <button onClick={() => changeToDo(id)} className="changeToDoBtn">
-              Изменить
-            </button>
-            <button onClick={() => deletToDo(id)} className="deleteToDoBtn">
-              Удалить
-            </button>
-            <div className="underlineToDo"></div>
-          </div>
-        );
-      })}
-    </div>
+    <AppContext.Provider
+      value={{ filteredToDos, sortToDoS, deletToDo, changeToDo }}
+    >
+      <TodosList searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+    </AppContext.Provider>
   );
 };
