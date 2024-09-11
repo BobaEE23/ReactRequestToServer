@@ -7,7 +7,7 @@ export const App = () => {
   const [isSort, setIsSort] = useState(false);
   const [toDos, setToDos] = useState([]);
   return (
-    <div className="App">
+    <div className="Ap">
       <Input
         refreshToDos={refreshToDos}
         isSort={isSort}
